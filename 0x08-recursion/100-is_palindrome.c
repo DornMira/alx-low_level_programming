@@ -44,7 +44,7 @@ int is_palindrome(char *s)
 
 int helper_palindrome(char *s, int len)
 {
-	if (len <= 1)	
+	if (len <= 1)
 		return (1);
 	else if (*s == *(s + len - 1))
 	{
