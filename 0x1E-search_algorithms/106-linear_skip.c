@@ -1,24 +1,47 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "search_algos.h"
+#include <math.h>
+
+#define PRINT_CHECKED(idx, item) \
+	printf("Value checked at index [%lu] = [%d]\n", (idx), (item))
+
+#define PRINT_BOUNDED(low, high) \
+	printf("Value found between indexes [%lu] and [%lu]\n", (low), (high))
 
 /**
- * main - Entry point
+ * linear_skip - search for a value in a sorted list of integers
+ * @list: list of values
+ * @value: value to locate
  *
- * Return: Always EXIT_SUCCESS
+ * Return: If value is not present in list or list is NULL, return -1.
+ * Otherwise, returh the first node where value is located.
  */
-int main(void)
+skiplist_t *linear_skip(skiplist_t *list, int value)
 {
-    int array[] = {
-        0, 1, 2, 5, 5, 6, 6, 7, 8, 9
-    };
-    size_t size = sizeof(array) / sizeof(array[0]);
+	skiplist_t *tail = list;
 
-    printf("Found %d at index: %d\n\n", 8, advanced_binary(array, size, 8));
-    printf("Found %d at index: %d\n\n", 5, advanced_binary(array, size, 5));
-    printf("Found %d at index: %d\n\n", 999, advanced_binary(array, size, 999));
-    printf("Found %d at index: %d\n\n", 2, advanced_binary(array, size, 2));
-    printf("Found %d at index: %d\n\n", 6, advanced_binary(array, size, 6));
-    printf("Found %d at index: %d\n\n", 1, advanced_binary(array, size, 1));
-    return (EXIT_SUCCESS);
+	if (list)
+	{
+		while (tail->express && value > tail->n)
+		{
+			list = tail;
+			tail = tail->express;
+			PRINT_CHECKED(tail->index, tail->n);
+		}
+		if (value > tail->n)
+		{
+			list = tail;
+			while (tail->next)
+				tail = tail->next;
+		}
+		PRINT_BOUNDED(list->index, tail->index);
+		tail = tail->next;
+		while (list != tail)
+		{
+			PRINT_CHECKED(list->index, list->n);
+			if (list->n == value)
+				return (list);
+			list = list->next;
+		}
+	}
+	return (NULL);
 }
