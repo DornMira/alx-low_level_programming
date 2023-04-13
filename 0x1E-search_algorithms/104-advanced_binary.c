@@ -1,60 +1,64 @@
 #include "search_algos.h"
 
 /**
- * print_array - print the values in an array
- * @array: the array of values
- * @lo: the smallest index
- * @hi: the greatest index
- */
-static void print_array(int *array, size_t lo, size_t hi)
-{
-	printf("Searching in array: ");
-	while (lo <= hi)
-	{
-		if (lo < hi)
-			printf("%d, ", array[lo++]);
-		else
-			printf("%d\n", array[lo++]);
-	}
-}
-
-/**
- * _advanced_binary - search for a value in a sorted array of integers
- * @array: the array of values
- * @lo: the smallest index
- * @hi: the greatest index
- * @value: the value to locate
+ * rec_search - searches for a value in an array of
+ * integers using the Binary search algorithm
  *
- * Return: If value is not present in array or array is NULL, return -1.
- * Otherwise, returh the first index where value is located.
+ *
+ * @array: input array
+ * @size: size of the array
+ * @value: value to search in
+ * Return: index of the number
  */
-static int _advanced_binary(int *array, size_t lo, size_t hi, int value)
+int rec_search(int *array, size_t size, int value)
 {
-	size_t mid = (lo + hi) / 2;
+	size_t half = size / 2;
+	size_t i;
 
-	if (lo > hi)
+	if (array == NULL || size == 0)
 		return (-1);
 
-	print_array(array, lo, hi);
-	if (array[mid] < value)
-		return (_advanced_binary(array, mid + 1, hi, value));
-	if (array[mid] > value)
-		return (_advanced_binary(array, lo, mid, value));
-	if (array[mid - 1] == value)
-		return (_advanced_binary(array, lo, mid, value));
-	return (mid);
+	printf("Searching in array");
+
+	for (i = 0; i < size; i++)
+		printf("%s %d", (i == 0) ? ":" : ",", array[i]);
+
+	printf("\n");
+
+	if (half && size % 2 == 0)
+		half--;
+
+	if (value == array[half])
+	{
+		if (half > 0)
+			return (rec_search(array, half + 1, value));
+		return ((int)half);
+	}
+
+	if (value < array[half])
+		return (rec_search(array, half + 1, value));
+
+	half++;
+	return (rec_search(array + half, size - half, value) + half);
 }
 
 /**
- * advanced_binary - search for a value in a sorted array of integers
- * @array: the array of values
- * @size: the number of values
- * @value: the value to locate
+ * advanced_binary - calls to rec_search to return
+ * the index of the number
  *
- * Return: If value is not present in array or array is NULL, return -1.
- * Otherwise, returh the first index where value is located.
+ * @array: input array
+ * @size: size of the array
+ * @value: value to search in
+ * Return: index of the number
  */
 int advanced_binary(int *array, size_t size, int value)
 {
-	return (array && size ? _advanced_binary(array, 0, size - 1, value) : -1);
+	int index;
+
+	index = rec_search(array, size, value);
+
+	if (index >= 0 && array[index] != value)
+		return (-1);
+
+	return (index);
 }
